@@ -1,4 +1,48 @@
-#page {
-    height: 100vh;
+body {
+    margin: 0;
     width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template: 1fr / minmax(150px, 1fr) 6fr;
+}
+
+.sidebar {
+    padding: 10px;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#add {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.hr {
+    width: 100%;
+    border: solid white 1px;
+    height: 0px;
+}
+
+#addButton {
+    background-color: black;
+    color: white;
+    border: solid white 2px;
+}
+
+#projects {
+    width: 100%;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#projects > * {
+    background-color: black;
+    border: solid white 1px;
+    color: white;
 }
