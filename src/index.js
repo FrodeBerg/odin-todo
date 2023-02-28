@@ -1,20 +1,41 @@
 import "./style.css";
 
 document.addEventListener("DOMContentLoaded", () => {
-  addFunction("addButton", "click", toggleInput);
+  addFunction("addProject", "click", toggleInput, "projects");
+  addFunction("addTask", "click", toggleInput, "tasks");
+  updateDisplay();
 });
 
-const projects = [];
-
 const newProject = (name) => {
+  const tasks = [];
+
+  return {
+    name,
+    tasks,
+  };
+};
+
+function projectId(project){
+    return projects.indexOf(project);
+}
+
+
+const projects = localStorage.getItem("projects") ? JSON.parse(localStorage.getItem("projects")) : [newProject("default")];
+let currentProject = projects[0];
+
+const newTask = (name) => {
   return {
     name,
   };
 };
 
-function addFunction(id, type, func) {
-  const element = document.getElementById(id);
-  element.addEventListener(type, () => func("projects"));
+function addFunction(id, type, func, parameters = null) {
+  const element = typeof id === "string" ? document.getElementById(id) : id;
+
+  element.addEventListener(type, (event) => {
+    if (parameters === null) func(event);
+    else func(parameters);
+  });
 }
 
 function toggleInput(parentId) {
@@ -28,31 +49,59 @@ function toggleInput(parentId) {
   input.addEventListener("keypress", (event) => {
     if (event.key === "Enter") {
       const value = event.srcElement.value;
-      if (value !== "") addProject(value);
+      if (value !== "")
+        parentId === "projects" ? addProject(value) : addTask(value);
       input.remove();
     }
   });
 }
 
-function addProject(test) {
-  const project = newProject(test);
+function addProject(name) {
+  const project = newProject(name);
   projects.push(project);
   updateDisplay();
 }
 
-function showProject(project) {
-  console.log(project);
+function addTask(name) {
+  const task = newTask(name);
+  currentProject.tasks.push(task);
+  updateDisplay();
+}
+
+function removeTask(index) {
+  currentProject.tasks.splice(index, 1);
+  updateDisplay()
+}
+
+function showProject(id) {
+  const project = projects[id];
+  currentProject = project;
+  updateDisplay();
 }
 
 function updateDisplay() {
+  localStorage.setItem("projects", JSON.stringify(projects));
+
   const projectsTab = document.getElementById("projects");
+  const tasksTab = document.getElementById("tasks");
+  const projectTitle = document.getElementById("projectTitle");
+
   projectsTab.innerHTML = "";
+  tasksTab.innerHTML = "";
+  projectTitle.innerHTML = currentProject.name;
 
   projects.forEach((project) => {
     const button = document.createElement("button");
     button.textContent = project.name;
-    button.setAttribute("onclick", `showProject(${project})`);
+    addFunction(button, "click", showProject, projectId(project));
     projectsTab.prepend(button);
+  });
+
+  currentProject.tasks.forEach((task) => {
+    const button = document.createElement("button");
+    button.textContent = task.name;
+    addFunction(button, "click", removeTask, currentProject.tasks.indexOf(task))
+    tasksTab.prepend(button);
   });
 }
 

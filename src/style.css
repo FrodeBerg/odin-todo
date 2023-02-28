@@ -27,13 +27,14 @@ body {
     height: 0px;
 }
 
-#addButton {
+#addProject {
     background-color: black;
     color: white;
     border: solid white 2px;
 }
 
-#projects {
+#projects,
+#tasks {
     width: 100%;
     margin: 10px;
     display: flex;
@@ -41,8 +42,13 @@ body {
     gap: 5px;
 }
 
-#projects > * {
+#projects > *,
+#tasks > * {
     background-color: black;
     border: solid white 1px;
     color: white;
+}
+
+#tasks > * {
+    background-color: grey;
 }
